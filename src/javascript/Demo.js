@@ -23,6 +23,11 @@ export default {
       await JsonUtil.update('note', this.form)
       this.editDialog = false
       this.data = await JsonUtil.get('note')
+    },
+    async add () {
+      await JsonUtil.add('note', this.form)
+      this.editDialog = false
+      this.data = await JsonUtil.get('note')
     }
   }
 }

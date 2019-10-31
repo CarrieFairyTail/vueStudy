@@ -1,5 +1,6 @@
 <template>
   <div style="margin: 0 auto;width:70%;border: 1px solid #ccc">
+    <el-button type="primary" @click="form={};editDialog = true;">添加</el-button>
     <el-table :data="data" style="width: 100%">
       <el-table-column prop="id" label="ID" width="180"></el-table-column>
       <el-table-column prop="date" label="日期" width="180"></el-table-column>
@@ -14,7 +15,7 @@
 
     <el-dialog title="编辑" :visible.sync="editDialog" width="30%" center>
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="ID">
+        <el-form-item label="ID" v-show="form.id !== undefined">
           <el-input v-model="form.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="日期">
@@ -26,7 +27,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialog = false">取 消</el-button>
-        <el-button type="primary" @click="edit()">确 定</el-button>
+        <el-button type="primary" @click="form.id !== undefined ? edit() :add()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
