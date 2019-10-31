@@ -16,7 +16,7 @@ export default {
       this.data = await JsonUtil.get('note')
     },
     async get (id) {
-      this.form = JSON.parse(JSON.stringify(await JsonUtil.getById('note', id)))
+      this.form = await JsonUtil.getById('note', id)
       this.editDialog = true
     },
     async edit () {

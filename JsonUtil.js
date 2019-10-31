@@ -12,7 +12,7 @@ async function get (jsonFileName, flush = false) {
 
 async function getById (jsonFileName, id) {
   const dataList = await get(jsonFileName)
-  return dataList.filter(t => { return t.id === id })[0]
+  return JSON.parse(JSON.stringify(dataList.filter(t => { return t.id === id })[0]))
 }
 
 async function update (jsonFileName, update) {
