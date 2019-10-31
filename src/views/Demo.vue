@@ -15,7 +15,7 @@
     <el-dialog title="编辑" :visible.sync="editDialog" width="30%" center>
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="ID">
-          <el-input v-model="form.id" disabled="true"></el-input>
+          <el-input v-model="form.id" disabled></el-input>
         </el-form-item>
         <el-form-item label="日期">
           <el-input v-model="form.date"></el-input>

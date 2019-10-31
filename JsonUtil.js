@@ -4,7 +4,7 @@ const _buffer = new Map()
 
 async function get (jsonFileName, flush = false) {
   if (flush || !_buffer.has(jsonFileName)) {
-    const res = await axios.get(`/static/${jsonFileName}.json`)
+    const res = await axios.get(`${process.env.BASE_URL}${jsonFileName}.json`)
     _buffer.set(jsonFileName, res.data.data)
   }
   return JSON.parse(JSON.stringify(_buffer.get(jsonFileName)))

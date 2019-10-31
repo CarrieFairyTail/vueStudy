@@ -2,7 +2,7 @@ import JsonUtil from '../../JsonUtil'
 export default {
   data () {
     return {
-      data: {},
+      data: [],
       form: {},
       editDialog: false
     }
