@@ -41,7 +41,7 @@ async function get(jsonFileName, attr = 'data', flush = false) {
  * @returns {Promise<*>} 单条数据
  */
 async function getById(jsonFileName, id, attr = 'data') {
-    const dataList = await get(jsonFileName, attr);
+    const dataList = (await get(jsonFileName, attr)).data;
     return {
         result: true,
         data: JSON.parse(JSON.stringify(dataList.filter(t => {
@@ -59,7 +59,7 @@ async function getById(jsonFileName, id, attr = 'data') {
  */
 async function update(jsonFileName, update, attr = 'data') {
     update = Array.isArray(update) ? update : [update];
-    let dataList = await get(jsonFileName, attr);
+    let dataList = (await get(jsonFileName, attr)).data;
     const updateMap = new Map();
     update.forEach(u => {
         updateMap.set(u.id, u)
@@ -84,7 +84,7 @@ async function update(jsonFileName, update, attr = 'data') {
  */
 async function del(jsonFileName, id, attr = 'data') {
     id = Array.isArray(id) ? id : [id];
-    let dataList = await get(jsonFileName, attr);
+    let dataList = (await get(jsonFileName, attr)).data;
     for (let i = 0; i < dataList.length; i++) {
         if (id.indexOf(dataList[i].id) !== -1) {
             dataList.splice(i--, 1);
@@ -105,7 +105,7 @@ async function del(jsonFileName, id, attr = 'data') {
  */
 async function add(jsonFileName, item, attr = 'data') {
     item = Array.isArray(item) ? item : [item];
-    let dataList = await get(jsonFileName, attr);
+    let dataList = (await get(jsonFileName, attr)).data;
     let ids = dataList.map(it => {
         return it.id
     }).sort((a, b) => {
