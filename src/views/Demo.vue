@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 0 auto;width:70%;border: 1px solid #ccc">
-    <el-button type="primary" @click="form={};editDialog = true;">添加</el-button>
+    <el-button type="primary" @click="form={},editDialog = true">添加</el-button>
     <el-table :data="data" style="width: 100%">
       <el-table-column prop="id" label="ID" width="180"></el-table-column>
       <el-table-column prop="date" label="日期" width="180"></el-table-column>
