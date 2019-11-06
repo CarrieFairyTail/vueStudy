@@ -1,35 +1,35 @@
-// import JsonUtil from "../../utils/JsonUtil";
+import JsonUtil from "../../utils/JsonUtil";
+import DateUtil from "../../utils/DateUtil";
+import moment from 'moment';
 
 export default {
     data () {
         return {
-            title: ['一', '二', '三', '四', '五', '六', '七'],
+            title: ['一', '二', '三', '四', '五', '六', '日'],
             calendarArray: [],
-            todayYear: new Date().getFullYear(),
-            todayMonth: new Date().getMonth() + 1,
-            todayDate: new Date().getDate(),
-            selectYear: this.todayYear,
-            selectMonth: null,
-            selectDate: null,
-            currentTime: new Date().toLocaleTimeString('chinese', { hour12: false }).replace(/:/g, ' : ')
+            selectDate: new Date(),
+            currentTime: new Date().toLocaleTimeString('chinese', { hour12: false }).replace(/:/g, ' : '),
+            hide: false,
+            calendar: [],
+        }
+    },
+    computed: {
+        lunar() {
+            return DateUtil.GetLunarDay(this.selectDate.getFullYear(), this.selectDate.getMonth()+1, this.selectDate.getDate());
         }
     },
     mounted () {
         this.initData();
-        this.selectYear = this.todayYear;
-        this.selectMonth = this.todayMonth;
-        this.selectDate = this.todayDate;
         setInterval(() => {
             this.currentTime = new Date().toLocaleTimeString('chinese', { hour12: false }).replace(/:/g, ' : ');
         }, 1000);
-
     },
     methods: {
-        initData(date=new Date()) {
+        initData() {
             this.calendarArray = [];
-            const monthFirstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-            const monthLastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-            const preMonthLastDay = new Date(date.getFullYear(), date.getMonth(), 0);
+            const monthFirstDay = new Date(this.selectDate.getFullYear(), this.selectDate.getMonth(), 1);
+            const monthLastDay = new Date(this.selectDate.getFullYear(), this.selectDate.getMonth() + 1, 0);
+            const preMonthLastDay = new Date(this.selectDate.getFullYear(), this.selectDate.getMonth(), 0);
             let firstDayWeek = (monthFirstDay.getDay() === 0 ? 7 : monthFirstDay.getDay()) - 1;
             let eachRow = Array(7).fill(0);
             let index = 0;
@@ -65,34 +65,43 @@ export default {
             }
         },
 
-        calcMonth(num) {
-            this.selectMonth = this.selectMonth + num;
-            if (this.selectMonth === 13) {
-                this.selectMonth = 1;
-                this.selectYear++;
-            }
-            if (this.selectMonth === 0) {
-                this.selectMonth = 12;
-                this.selectYear--;
-            }
-        },
-
         selectDay(day) {
-            this.calcMonth(day.type);
-            this.selectDate = day.data;
-            if(day.type !== 0) {
-                this.initData(new Date(this.selectYear, this.selectMonth-1, this.selectDate));
-            }
+            this.selectDate = new Date(this.selectDate.getFullYear(), this.selectDate.getMonth() + day.type, day.data);
         },
 
         changeMonth(num) {
-            this.calcMonth(num);
-            this.initData(new Date(this.selectYear, this.selectMonth-1, this.selectDate));
+            const maxDate = new Date(this.selectDate.getFullYear(), this.selectDate.getMonth() + num + 1, 0).getDate();
+            this.selectDate = new Date(this.selectDate.getFullYear(), this.selectDate.getMonth() + num, maxDate > this.selectDate.getDate() ? this.selectDate.getDate() : maxDate);
         },
 
         changeYear(num) {
-            this.selectYear = this.selectYear + num;
-            this.initData(new Date(this.selectYear, this.selectMonth-1, this.selectDate));
+            this.selectDate = new Date(this.selectDate.getFullYear() + num, this.selectDate.getMonth(), this.selectDate.getDate());
+        },
+
+        changeDate(num) {
+            this.selectDate = new Date(this.selectDate.getFullYear(), this.selectDate.getMonth(), this.selectDate.getDate() + num);
+        }
+    },
+    watch: {
+        selectDate: function (newValue, oldValue) {
+            if (newValue.getFullYear() !== oldValue.getFullYear() || newValue.getMonth() !== oldValue.getMonth()) {
+                this.initData();
+            }
+            this.calendar = [];
+            JsonUtil.get('calendar').then(res => {
+                if (res.result) {
+                    res.data.forEach(item => {
+                        let now = null;
+                        switch (item.type) {
+                            case '1': now = this.selectDate;break;
+                            case '2': now = new Date(this.lunar.format);break;
+                        }
+                        if (now !== null && item.date === moment(now).format(item.format)) {
+                            this.calendar.push(item.calendar);
+                        }
+                    })
+                }
+            })
         }
     }
 }
