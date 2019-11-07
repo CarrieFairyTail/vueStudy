@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import {slideMenu} from "./utils/slide";
+  import JsonUtil from "./utils/JsonUtil";
 
   export default {
     name: 'APP',
@@ -41,8 +41,8 @@
         menu: []
       }
     },
-    mounted() {
-      this.menu = slideMenu
+    async mounted() {
+      this.menu = (await JsonUtil.get('Menu', 'menu', true)).data;
     },
     methods: {
       handleOpen(key, keyPath) {
