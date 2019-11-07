@@ -1,0 +1,12 @@
+{
+  "menu": [
+    {"name": "DEMO", "children": [
+      {"name": "傻猪的", "url": "/hklDate"},
+      {"name": "猪它男朋友的", "url": "/Demo"}
+    ]},
+    {"name": "日历", "children": [
+      {"name": "傻猪的", "url": "/hklView"},
+      {"name": "猪它男朋友的", "url": "/calendar"}
+    ]}
+  ]
+}
