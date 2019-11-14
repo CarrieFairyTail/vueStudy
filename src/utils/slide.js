@@ -9,6 +9,10 @@ let slideMenu = [
       {
         name: '美人demo',
         url: '/Demo'
+      },
+      {
+        name: '我的text',
+        url: '/myText'
       }
     ]
   },
@@ -26,11 +30,11 @@ let slideMenu = [
     ]
   },
   {
-    name: '项目三',
+    name: '账单',
     children: [
       {
         name: '我的',
-        url: '/'
+        url: '/hklBill'
       },
       {
         name: '美人',
