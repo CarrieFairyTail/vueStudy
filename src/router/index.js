@@ -4,8 +4,8 @@ import Demo from '../views/Demo.vue'
 import hklDate from "../views/HKL/hklDate"
 import hklView from "../views/HKL/hklView"
 import myText from '../views/HKL/text'
-import hklBill from '../views/HKL/bill'
-
+import hklBill from '../views/HKL/hklBill/bill'
+import home from '../views/HKL/home'
 Vue.use(VueRouter)
 
 const routes = [
@@ -16,7 +16,7 @@ const routes = [
   },
   {
     path: '/myText',
-    name: 'text',
+    name: 'text1',
     component: myText
   },
   {
@@ -33,6 +33,11 @@ const routes = [
     path: '/hklBill',
     name: 'bill',
     component: hklBill
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: home
   }
 ]
 

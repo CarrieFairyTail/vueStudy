@@ -31,8 +31,9 @@ export default {
       // month: new Date().getMonth(),
       // year: new Date().getFullYear(),
       notes: [],
-      note: '',
-      show: false
+      note: [],
+      show: false,
+      dialogNoteVisible: false
     }
   },
   mounted() {
@@ -83,11 +84,14 @@ export default {
       let month = this.date.getMonth()
       let year = this.date.getFullYear()
       let thisMonthDay = new Date(year, month, 1)
-      console.log('monthday:' + thisMonthDay)
+      // console.log('monthday:' + thisMonthDay)
       let thisMonthFirstDay = thisMonthDay.getDay()
-      console.log('monthfirstday:' + thisMonthFirstDay)
+      if(thisMonthFirstDay === 0) {
+        thisMonthFirstDay = 7
+      }
+      // console.log('monthfirstday:' + thisMonthFirstDay)
       let thisMonthFirstDate = new Date(year, month, -thisMonthFirstDay)
-      console.log('first:' + thisMonthFirstDate)
+      // console.log('first:' + thisMonthFirstDate)
       this.generateTable(thisMonthFirstDate)  //生成日历主体的日期区域
       this.generateNav(year, month) // 导航年/月
       this.getNote()
@@ -127,7 +131,7 @@ export default {
         .then(res => {
           if (res.result) {
             this.notes = res.data
-            this.note = ''
+            this.note = []
             this.notes.forEach(item => {
               if (item.date == this.dateInfo.toLocaleDateString()) {
                 this.note = item.note
@@ -135,6 +139,11 @@ export default {
             })
           }
         })
+    },
+    // 双击添加备忘
+    doubleClick() {
+      // console.log('这是一条备忘哦')
+      this.dialogNoteVisible = true
     }
   },
   components: {

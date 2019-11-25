@@ -41,8 +41,8 @@ let slideMenu = [
         url: '/'
       },
       {
-        name: 'Demo',
-        url: '/'
+        name: '首页',
+        url: '/home'
       }
     ]
   },

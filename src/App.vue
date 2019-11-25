@@ -6,7 +6,7 @@
           class="el-menu-vertical-demo"
           @open="handleOpen"
           @close="handleClose"
-          background-color="#545c64"
+          background-color="#09315b"
           text-color="#fff"
           active-text-color="#ffd04b">
         <el-submenu @click="openpage(m.url)" :index="n+''" v-for="(m,n) in menu" :key="n">
@@ -70,7 +70,7 @@
     .left
       width 200px
       height calc(100vh - 20px)
-      background-color #545c64
+      background-color #09315b
       overflow auto
 
     .right

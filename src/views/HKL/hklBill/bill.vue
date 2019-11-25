@@ -5,7 +5,17 @@
       <el-radio-button label="month">月</el-radio-button>
       <el-radio-button label="date">日</el-radio-button>
     </el-radio-group>
-    <el-button>视图</el-button>
+    <el-button type="text" @click="showView" style="font-size: 20px">
+      <i class="el-icon-data-line"></i>
+    </el-button>
+    <el-dialog
+        :title="nowDate.toLocaleDateString()"
+        :visible.sync="dialogViewVisible"
+        width="50%">
+      <div id="innerView"></div>
+    </el-dialog>
+    <year-bill v-show="tabPosition === 'year'"></year-bill>
+    <month-bill v-show="tabPosition === 'month'"></month-bill>
     <div class="date" v-show="tabPosition === 'date'">
       <div class="date-header">
         <i class="el-icon-arrow-left" @click="lastYear"></i>
@@ -105,14 +115,20 @@
 </template>
 
 <script>
+  import Echarts from 'echarts/lib/echarts'
+  import 'echarts/lib/chart/line'
+  import 'echarts/lib/component/legend'
+  import YearBill from "./yearBill";
+  import MonthBill from "./monthBill";
   export default {
     name: "bill",
     data() {
       return {
-        tabPosition: 'year',
+        tabPosition: 'date',
         nowDate: new Date(),
         dialogVisible: false,
         dialoginnerVisible: false,
+        dialogViewVisible: false,
         weekList: ['日', '一', '二', '三', '四', '五', '六'],
         week: new Array(),
         navYear: '',
@@ -144,7 +160,33 @@
           money: '10'
         }],
         addTotal: 20,
-        deleteTotal: 20
+        deleteTotal: 20,
+        viewOption: {
+          xAxis: {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          },
+          yAxis: {
+            type: 'value'
+          },
+          series: [{
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            type: 'line'
+          }]
+        },
+        chart: null
+      }
+    },
+    watch: {
+      dialogViewVisible(to) {
+        if(to) {
+          this.$nextTick(() => {
+            this.initView()
+            console.log('chart:'+this.chart)
+          })
+        } else {
+          this.chart.dispose()
+        }
       }
     },
     mounted() {
@@ -152,6 +194,7 @@
         this.nowTime = new Date().toLocaleTimeString('chinese', {hour12: false})
       }, 1000)
       this.initDate()
+      // this.initView()
     },
     methods: {
       selectedDate(to) {
@@ -241,9 +284,19 @@
       deleteMoney() {
         this.dialoginnerVisible = true
         this.tag = '支出'
+      },
+      showView() {
+        this.dialogViewVisible = true
+      },
+      // 图表
+      initView() {
+        this.chart = Echarts.init(document.getElementById('innerView'))
+        this.chart.setOption(this.viewOption)
       }
     },
     components: {
+      MonthBill,
+      YearBill
     }
   }
 </script>
@@ -258,7 +311,8 @@
     .change
       background-color #cccccc
     .now
-      background-color darkcyan
+      color wheat
+      background-color #09315b
     .date
       width 100%
       border 1px solid #cccccc
@@ -287,7 +341,7 @@
                 padding 10px
                 border 1px solid #cccccc
               td:hover
-                background-color #cccccc
+                background-color #F2A5A5
                 cursor pointer
     .el-dialog__body
       min-height 200px
@@ -316,4 +370,7 @@
             font-size 20px
       .inner-bottom
         margin-bottom 20px
+  #innerView
+    height 400px
+    width 100%
 </style>
