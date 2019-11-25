@@ -142,6 +142,7 @@
     .right
       display flex
       justify-content flex-end
+      right 0px
       transition right 1.5s
       -webkit-transition right 1.5s
       height calc(100vh - 60px)
