@@ -33,7 +33,8 @@ export default {
       notes: [],
       note: [],
       show: false,
-      dialogNoteVisible: false
+      dialogNoteVisible: false,
+      k: 0
     }
   },
   mounted() {
@@ -41,6 +42,7 @@ export default {
       this.nowTime = new Date().toLocaleTimeString('chinese', {hour12: false})
     }, 1000)
     this.initDate()
+    // this.changeWidth(this.k)
   },
   methods: {
     // 上一天
@@ -133,7 +135,7 @@ export default {
             this.notes = res.data
             this.note = []
             this.notes.forEach(item => {
-              if (item.date == this.dateInfo.toLocaleDateString()) {
+              if (item.date === this.dateInfo.toLocaleDateString()) {
                 this.note = item.note
               }
             })
@@ -144,6 +146,34 @@ export default {
     doubleClick() {
       // console.log('这是一条备忘哦')
       this.dialogNoteVisible = true
+    },
+    // 拖动更改宽度
+    changeWidth(k) {
+      let triangle = document.getElementsByClassName("Triangle")[k]
+      let dateItem = document.getElementsByClassName("dateItem")[k]
+      console.log('triangle'+JSON.stringify(triangle))
+      console.log('dateItem'+JSON.stringify(dateItem))
+      triangle.onmousedown = function (e) {
+        let startX = e.clientX
+        triangle.left = triangle.offsetLeft
+        document.onmousemove = function (e) {
+          let endX = e.clientX
+          let moveLen = triangle.left + (endX - startX)
+          if(k !== 0) {
+            moveLen -= k*260
+          } else if(k===1) {
+            moveLen -= k*230
+          }
+          dateItem.style.width = moveLen + "px"
+        }
+        document.onmouseup = function(){
+          document.onmousemove = null;
+          document.onmouseup = null;
+          triangle.releaseCapture && triangle.releaseCapture();
+        }
+        triangle.setCapture && triangle.setCapture();
+        return false
+      }
     }
   },
   components: {

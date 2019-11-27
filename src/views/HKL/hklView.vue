@@ -44,8 +44,35 @@
             </div>
           </div>
         </div>
+        <!--日期进度条-->
+        <h5>时间进度</h5>
+        <div class="datePro">
+          <div class="dateProInner" v-for="(item, k) in week" :key="k">
+            <div class="unTriangle"></div>
+            <div :class="['dateItem', 'dateItem'+k]">
+              <div class="dateInner" v-for="(t, n) in week[k]" :key="n">
+                <div class="dateCircle" v-if="notes.some(item => {if (item.date === t.toLocaleDateString()) { return true; } })">
+                  <div class="dateCirInner">
+                    <div class="dateTree"></div>
+                    <div class="dateNote">
+                      <div style="color: #666">{{t.toLocaleDateString()}}</div>
+                      <div v-for = "(item, i) in notes" :key="i">
+                        <div class="dateNoteInner" v-if="item.date === t.toLocaleDateString()">
+                          <span v-for = "(t, i) in item.note" :key="i">
+                            {{t.value}}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div :class="['Triangle', 'Triangle'+k]" @mousedown="changeWidth(k)"></div>
+          </div>
+        </div>
       </div>
-<!--  :class="[show ? '' : 'move']" -->
+      <!--:class="[show ? '' : 'move']" -->
       <div class="right" :style="{right: show ? '' : '-168px'}">
         <div class="flexitem">
           <div class="hidden" @click="show=!show">
@@ -62,7 +89,9 @@
               <div @click="nextDay">后一天</div>
             </div>
             <div class="bottom-text">
-              <div v-for = "(item, i) in note" :key="i">{{item.value}}</div>
+              <div v-for = "(item, i) in note" :key="i">
+                {{item.value}}
+              </div>
             </div>
           </div>
         </div>
@@ -99,6 +128,19 @@
     background-color aquamarine
   .date
     margin-right 20px
+  .Triangle
+    width 0px
+    height 0px
+    border-left 25px solid #09315B
+    border-top 15px solid transparent
+    border-bottom 15px solid transparent
+    cursor e-resize
+  .unTriangle
+    width 0
+    height 0
+    border-left 25px solid transparent
+    border-top 15px solid #09315B
+    border-bottom 15px solid #09315B
   .flexalign
     display flex
     justify-content space-between
@@ -139,6 +181,72 @@
           text-align center
           height 50px
           line-height 50px
+      .datePro
+        height 250px
+        margin-top 70px
+        display flex
+        justify-content flex-start
+        .dateProInner
+          display flex
+          justify-content flex-start
+        .dateItem
+          min-width 230px
+          height 30px
+          background-color #09315B
+          display flex
+          justify-content space-around
+          align-items center
+          .dateInner
+            display flex
+            flex-direction column
+            align-items center
+            position relative
+            .dateCircle
+              width 10px
+              height 10px
+              border-radius 50%
+              background-color white
+              .dateCirInner
+                position relative
+                display flex
+                flex-direction column
+                align-items center
+                .dateTree
+                  width 3px
+                  height 50px
+                  background-color #09315B
+                  margin-top 10px
+                .dateNote
+                  width 80px
+                  color #999
+                  font-size 13px
+                  text-align center
+                  .dateNoteInner
+                    width 80px
+                    font-size 12px
+                    //强制不换行
+                    white-space nowrap
+                    overflow hidden
+                    text-overflow ellipsis
+          .dateInner:nth-child(even)
+            .dateCircle
+              /*background-color #13ce66*/
+              .dateCirInner
+                /*display flex*/
+                /*flex-direction column-reverse*/
+                .dateTree
+                  background-color #09315B
+                  position absolute
+                  bottom 10px
+                .dateNote
+                  color #999999
+                  position absolute
+                  bottom 60px
+        .dateProInner:first-child
+          .unTriangle
+            display none
+        .dateProInner:not(:first-child)
+          margin-left -15px
     .right
       display flex
       justify-content flex-end
