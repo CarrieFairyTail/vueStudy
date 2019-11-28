@@ -1,6 +1,6 @@
-import JsonUtil from '../utils/JsonUtil'
-import calendar from '../views/HKL/components/calendar/calendar.vue'
-
+import JsonUtil from '../../../utils/JsonUtil'
+import calendar from '../components/calendar/calendar.vue'
+import timeStep from "../components/timeStep";
 export default {
   name: "hklView",
   data() {
@@ -151,18 +151,20 @@ export default {
     changeWidth(k) {
       let triangle = document.getElementsByClassName("Triangle")[k]
       let dateItem = document.getElementsByClassName("dateItem")[k]
-      console.log('triangle'+JSON.stringify(triangle))
-      console.log('dateItem'+JSON.stringify(dateItem))
-      triangle.onmousedown = function (e) {
-        let startX = e.clientX
+      // let triangle = this.$refs["Triangle"+k]
+      // let dateItem = this.$refs["dateItem"+k]
+      // console.log('triangle'+JSON.stringify(triangle))
+      // console.log('dateItem'+JSON.stringify(dateItem))
+      let e1 = window.event
+      // triangle.onmousedown = function (e) {
+        let startX = e1.clientX
+        console.log('e:'+JSON.stringify(e1))
         triangle.left = triangle.offsetLeft
         document.onmousemove = function (e) {
           let endX = e.clientX
           let moveLen = triangle.left + (endX - startX)
           if(k !== 0) {
-            moveLen -= k*260
-          } else if(k===1) {
-            moveLen -= k*230
+            moveLen -= k*180
           }
           dateItem.style.width = moveLen + "px"
         }
@@ -173,10 +175,11 @@ export default {
         }
         triangle.setCapture && triangle.setCapture();
         return false
-      }
+      // }
     }
   },
   components: {
-    calendar
+    calendar,
+    timeStep
   }
 }

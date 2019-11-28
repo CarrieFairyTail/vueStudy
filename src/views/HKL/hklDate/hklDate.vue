@@ -50,7 +50,7 @@
   </div>
 </template>
 
-<script src="../../javascript/hklDate.js"></script>
+<script src="./hklDate.js"></script>
 
 <style lang="stylus" scoped>
   #hklDate

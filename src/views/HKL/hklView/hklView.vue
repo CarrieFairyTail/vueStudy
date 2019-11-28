@@ -49,7 +49,7 @@
         <div class="datePro">
           <div class="dateProInner" v-for="(item, k) in week" :key="k">
             <div class="unTriangle"></div>
-            <div :class="['dateItem', 'dateItem'+k]">
+            <div :class="['dateItem', 'dateItem'+k]" :ref="'dateItem'+k">
               <div class="dateInner" v-for="(t, n) in week[k]" :key="n">
                 <div class="dateCircle" v-if="notes.some(item => {if (item.date === t.toLocaleDateString()) { return true; } })">
                   <div class="dateCirInner">
@@ -68,9 +68,10 @@
                 </div>
               </div>
             </div>
-            <div :class="['Triangle', 'Triangle'+k]" @mousedown="changeWidth(k)"></div>
+            <div :class="['Triangle', 'Triangle'+k]" :ref="'Triangle'+k" @mousedown="changeWidth(k)"></div>
           </div>
         </div>
+        <time-step :week="week" :notes="notes"></time-step>
       </div>
       <!--:class="[show ? '' : 'move']" -->
       <div class="right" :style="{right: show ? '' : '-168px'}">
@@ -114,7 +115,7 @@
   </div>
 </template>
 
-<script src="../../javascript/hklCalendar.js"></script>
+<script src="./hklCalendar.js"></script>
 
 <style lang="stylus">
 #hklView
@@ -190,7 +191,7 @@
           display flex
           justify-content flex-start
         .dateItem
-          min-width 230px
+          min-width 150px
           height 30px
           background-color #09315B
           display flex
@@ -217,12 +218,12 @@
                   background-color #09315B
                   margin-top 10px
                 .dateNote
-                  width 80px
+                  width 40px
                   color #999
                   font-size 13px
                   text-align center
                   .dateNoteInner
-                    width 80px
+                    width 40px
                     font-size 12px
                     //强制不换行
                     white-space nowrap
