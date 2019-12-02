@@ -49,30 +49,28 @@
     methods: {
       // 拖动更改宽度
       changeWidth(k) {
-        let triangle = document.getElementsByClassName("Triangle")[k]
-        let dateItem = document.getElementsByClassName("dateItem")[k]
+        let triangle = document.getElementsByClassName("Triangle")[k];
+        let dateItem = document.getElementsByClassName("dateItem")[k];
         // let triangle = this.$refs["Triangle"+k]
         // let dateItem = this.$refs["dateItem"+k]
-        // console.log('triangle'+JSON.stringify(triangle))
-        // console.log('dateItem'+JSON.stringify(dateItem))
-        let e1 = window.event
+        let e1 = window.event || event;
         // triangle.onmousedown = function (e) {
-        let startX = e1.clientX
-        console.log('e:'+JSON.stringify(e1))
-        triangle.left = triangle.offsetLeft
+        let startX = e1.clientX;
+        console.log('e:'+JSON.stringify(e1));
+        triangle.left = triangle.offsetLeft;
         document.onmousemove = function (e) {
-          let endX = e.clientX
-          let moveLen = triangle.left + (endX - startX)
+          let endX = e.clientX;
+          let moveLen = triangle.left + (endX - startX);
           if(k !== 0) {
             moveLen -= k*180
           }
           dateItem.style.width = moveLen + "px"
-        }
-        document.onmouseup = function(){
+        };
+        document.onmouseup = function() {
           document.onmousemove = null;
           document.onmouseup = null;
           triangle.releaseCapture && triangle.releaseCapture();
-        }
+        };
         triangle.setCapture && triangle.setCapture();
         return false
         // }
@@ -83,8 +81,8 @@
 
 <style scoped>
 .Triangle{
-  width: 0px;
-  height: 0px;
+  width: 0;
+  height: 0;
   border-left: 25px solid #09315B;
   border-top: 15px solid transparent;
   border-bottom: 15px solid transparent;
@@ -152,10 +150,10 @@
   overflow: hidden;
   text-overflow: ellipsis
 }
-.dateInner:nth-child(even)
-.dateCircle
+.dateInner:nth-child(even),
+.dateCircle,
 /*background-color #13ce66*/
-.dateCirInner
+.dateCirInner,
 /*display flex*/
 /*flex-direction column-reverse*/
 .dateTree{
@@ -163,11 +161,11 @@
   position: absolute;
   bottom: 10px
 }
-.dateNote {
-  color: #999999;
-  position: absolute;
-  bottom: 60px
-}
+/*.dateNote {*/
+/*  color: #999999;*/
+/*  position: absolute;*/
+/*  bottom: 60px*/
+/*}*/
 .dateProInner:first-child
 .unTriangle{
   display: none

@@ -1,6 +1,7 @@
 import JsonUtil from '../../../utils/JsonUtil'
 import calendar from '../components/calendar/calendar.vue'
-import timeStep from "../components/timeStep";
+import timeStep from "../components/timeStep"
+import Vue from 'vue'
 export default {
   name: "hklView",
   data() {
@@ -14,7 +15,7 @@ export default {
       // tag: false,
       // temp: [],
       weekList: ['日', '一', '二', '三', '四', '五', '六'],
-      week: new Array(),
+      week: [],
       navYear: '',
       navMonth: '',
       // weekNum: 0,
@@ -40,21 +41,21 @@ export default {
   mounted() {
     setInterval(() => {
       this.nowTime = new Date().toLocaleTimeString('chinese', {hour12: false})
-    }, 1000)
+    }, 1000);
     this.initDate()
     // this.changeWidth(this.k)
   },
   methods: {
     // 上一天
     lastDay() {
-      let currentDate = this.dateInfo.getDate()
-      this.dateInfo.setDate(--currentDate)
+      let currentDate = this.dateInfo.getDate();
+      this.dateInfo.setDate(--currentDate);
       this.getNote()
     },
     // 下一天
     nextDay() {
-      let currentDate = this.dateInfo.getDate()
-      this.dateInfo.setDate(++currentDate)
+      let currentDate = this.dateInfo.getDate();
+      this.dateInfo.setDate(++currentDate);
       this.getNote()
     },
     // 上个月
@@ -83,37 +84,38 @@ export default {
     },
     // 日历
     initDate() {
-      let month = this.date.getMonth()
-      let year = this.date.getFullYear()
-      let thisMonthDay = new Date(year, month, 1)
+      let month = this.date.getMonth();
+      let year = this.date.getFullYear();
+      let thisMonthDay = new Date(year, month, 1);
       // console.log('monthday:' + thisMonthDay)
-      let thisMonthFirstDay = thisMonthDay.getDay()
+      let thisMonthFirstDay = thisMonthDay.getDay();
       if(thisMonthFirstDay === 0) {
         thisMonthFirstDay = 7
       }
       // console.log('monthfirstday:' + thisMonthFirstDay)
       let thisMonthFirstDate = new Date(year, month, -thisMonthFirstDay)
       // console.log('first:' + thisMonthFirstDate)
-      this.generateTable(thisMonthFirstDate)  //生成日历主体的日期区域
-      this.generateNav(year, month) // 导航年/月
+      this.generateTable(thisMonthFirstDate); //生成日历主体的日期区域
+      this.generateNav(year, month); // 导航年/月
       this.getNote()
     },
     // 生成表格
     generateTable(firstDate) {
       // date 26
-      let date = firstDate.getDate()
+      let date = firstDate.getDate();
       for (let i = 0; i < 6; i++) {
-        this.week[i] = new Array()
+        // this.week[i] = new Array()
+        Vue.set(this.week, i, []);
         for (let j = 0; j < 7; j++) {
-          firstDate.setDate(++date)
-          date = firstDate.getDate()
+          firstDate.setDate(++date);
+          date = firstDate.getDate();
           this.week[i][j] = new Date(firstDate)
         }
       }
     },
     // 点击日期事件
     generateToday(dateInfo) {
-      this.dateInfo = new Date(dateInfo)
+      this.dateInfo = new Date(dateInfo);
       // console.log('datainfo:'+ this.dateInfo.getMonth()+1+'navMonth:'+this.navMonth)
       if (this.dateInfo.getMonth()+1<this.navMonth) {
         this.lastMonth()
@@ -132,8 +134,8 @@ export default {
       JsonUtil.get('hklview')
         .then(res => {
           if (res.result) {
-            this.notes = res.data
-            this.note = []
+            this.notes = res.data;
+            this.note = [];
             this.notes.forEach(item => {
               if (item.date === this.dateInfo.toLocaleDateString()) {
                 this.note = item.note
@@ -148,34 +150,52 @@ export default {
       this.dialogNoteVisible = true
     },
     // 拖动更改宽度
-    changeWidth(k) {
+    changeWidth(k, e) {
       let triangle = document.getElementsByClassName("Triangle")[k]
       let dateItem = document.getElementsByClassName("dateItem")[k]
+      let dateItemWidth = dateItem.offsetWidth
       // let triangle = this.$refs["Triangle"+k]
       // let dateItem = this.$refs["dateItem"+k]
-      // console.log('triangle'+JSON.stringify(triangle))
-      // console.log('dateItem'+JSON.stringify(dateItem))
-      let e1 = window.event
-      // triangle.onmousedown = function (e) {
-        let startX = e1.clientX
-        console.log('e:'+JSON.stringify(e1))
-        triangle.left = triangle.offsetLeft
-        document.onmousemove = function (e) {
-          let endX = e.clientX
-          let moveLen = triangle.left + (endX - startX)
-          if(k !== 0) {
-            moveLen -= k*180
-          }
-          dateItem.style.width = moveLen + "px"
-        }
-        document.onmouseup = function(){
-          document.onmousemove = null;
-          document.onmouseup = null;
-          triangle.releaseCapture && triangle.releaseCapture();
-        }
-        triangle.setCapture && triangle.setCapture();
-        return false
-      // }
+      let e1 = e || window.event;
+      let startX = e1.clientX;
+      triangle.left = triangle.offsetLeft;
+      console.log('left:' + triangle.left);
+      document.onmousemove = function (e) {
+        let endX = e.clientX
+        let moveLen = (endX - startX);
+        dateItem.style.width = dateItemWidth + moveLen + "px"
+      };
+      document.onmouseup = function(){
+        document.onmousemove = null;
+        document.onmouseup = null;
+        // triangle.releaseCapture && triangle.releaseCapture();
+      }
+      // triangle.setCapture && triangle.setCapture();
+      // return false
+    },
+    // 实现平移
+    translateDate(e) {
+      let datePro = document.getElementById('datePro');
+      let e1 = e || window.event;
+      let currentX = e1.clientX;
+      let left = datePro.offsetLeft;
+      document.onmousemove = function (e) {
+        let endX = e.clientX;
+        let moveLen = left + endX - currentX;
+        datePro.style.left = moveLen + "px"
+      };
+      document.onmouseup = function(){
+        document.onmousemove = null;
+        document.onmouseup = null;
+      }
+    }
+  },
+  watch: {
+    week(to) {
+      this.week = to
+    },
+    notes(to) {
+      this.notes = to
     }
   },
   components: {

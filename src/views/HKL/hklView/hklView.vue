@@ -46,7 +46,7 @@
         </div>
         <!--日期进度条-->
         <h5>时间进度</h5>
-        <div class="datePro">
+        <div id="datePro" @mousedown.stop="translateDate($event)">
           <div class="dateProInner" v-for="(item, k) in week" :key="k">
             <div class="unTriangle"></div>
             <div :class="['dateItem', 'dateItem'+k]" :ref="'dateItem'+k">
@@ -68,7 +68,7 @@
                 </div>
               </div>
             </div>
-            <div :class="['Triangle', 'Triangle'+k]" :ref="'Triangle'+k" @mousedown="changeWidth(k)"></div>
+            <div :class="['Triangle', 'Triangle'+k]" :ref="'Triangle'+k" @mousedown.stop="changeWidth(k, $event)"></div>
           </div>
         </div>
         <time-step :week="week" :notes="notes"></time-step>
@@ -130,8 +130,8 @@
   .date
     margin-right 20px
   .Triangle
-    width 0px
-    height 0px
+    width 0
+    height 0
     border-left 25px solid #09315B
     border-top 15px solid transparent
     border-bottom 15px solid transparent
@@ -149,6 +149,7 @@
     overflow hidden
     .left
       width 50%
+      position relative
       .date
         width 350px
         border 1px solid #cccccc
@@ -182,11 +183,14 @@
           text-align center
           height 50px
           line-height 50px
-      .datePro
+      #datePro
         height 250px
         margin-top 70px
         display flex
         justify-content flex-start
+        cursor move
+        position relative
+        left 0
         .dateProInner
           display flex
           justify-content flex-start
@@ -251,7 +255,7 @@
     .right
       display flex
       justify-content flex-end
-      right 0px
+      right 0
       transition right 1.5s
       -webkit-transition right 1.5s
       height calc(100vh - 60px)
