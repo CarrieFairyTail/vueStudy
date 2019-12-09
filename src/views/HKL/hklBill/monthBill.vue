@@ -2,7 +2,7 @@
   <div id="monthBill">
     <div class="month" v-for="item in monthOptions" :key="item">
       {{item}}
-      <div id="innerViewMonth"></div>
+      <div class="innerViewMonth"></div>
     </div>
   </div>
 </template>
@@ -16,7 +16,7 @@
     name: "monthBill",
     data() {
       return {
-        monthOptions: 12,
+        monthOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         viewOption: {
           series : [
             {
@@ -30,7 +30,7 @@
             }
           ]
         },
-        chart: null
+        chart: []
       }
     },
     mounted() {
@@ -39,7 +39,7 @@
     methods: {
       // 图表
       initView() {
-        this.chart = Echarts.init(document.getElementById('innerViewMonth'))
+        this.chart = Echarts.init(document.getElementsByClassName('innerViewMonth')[0])
         this.chart.setOption(this.viewOption)
       }
     }

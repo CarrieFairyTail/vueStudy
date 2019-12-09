@@ -43,6 +43,10 @@ let slideMenu = [
       {
         name: '首页',
         url: '/home'
+      },
+      {
+        name: '账单首页',
+        url: '/billHome'
       }
     ]
   },

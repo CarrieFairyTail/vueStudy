@@ -165,7 +165,7 @@ export default {
   .now
     background-color aquamarine
   .date
-    width 350px
+    width 100%
     border 1px solid #cccccc
     .date-header
       display flex
@@ -188,7 +188,7 @@ export default {
         table
           tbody
             td
-              padding 10px
+              padding 5px
               border 1px solid #cccccc
             td:hover
               background-color #cccccc

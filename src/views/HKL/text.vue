@@ -98,6 +98,23 @@
         </div>
         <el-switch v-model="delivery"></el-switch>
       </div>
+      <!--上传附件-->
+      <div class="row">
+        <div class="col-md-12  col-sm-12">
+          <div class="wg-upload">
+            <div v-for="(item, index) in uploadFiles" class="wg-upload-item">
+              <div class="wg-ui-desc">
+                <div class="wg-uid-filename" :title="item.name">{{item.name}}</div>
+                <div class="wg-uid-filesize" v-if="item.size!=-1">{{Number(item.size/1024).toFixed(2)}}Kb</div>
+                <div class="wg-uid-filesize" v-else>&nbsp;</div>
+                <span class="wg-uid-delete" @click="deleteFile(index)">×</span>
+              </div>
+            </div>
+            <!--              <div v-if="percent" style="color: #4cae4c;font-size: 16px">{{percent}}</div>-->
+            <div class="wg-upload-desc">请拖拽doc,excel,pptx,png,jpeg,pdf文件到虚线内,15M以内，完成上传</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -106,10 +123,12 @@
   import JsonUtil from '../../utils/JsonUtil'
   import Cascader from './components/cascader'
   import Axios from 'axios'
+  import $ from 'jquery'
   export default {
     name: "text1",
     data() {
       return {
+        uploadFiles: [],
         delivery: false,
         showInput: false,
         childShow: false,
@@ -327,6 +346,7 @@
     mounted() {
       this.getDcList()
       // this.getAreaOptions()
+      this.initDrag()
     },
     methods: {
       // 获取数据中心
@@ -409,6 +429,95 @@
       // 鼠标点击 选中当前选项
       clickChild(item) {
         console.log('item' + JSON.stringify(item))
+      },
+      // 经过对象：dragenter事件，拖放过程中鼠标经过的元素，被拖放的元素“开始”进入其它元素范围内（刚进入）
+      // 经过对象：dragover事件，拖放过程中鼠标经过的元素，被拖放的元素正在本元素范围内移动(一直)
+      // 经过对象：dragleave事件，拖放过程中鼠标经过的元素，被拖放的元素离开本元素范围
+      // 目标地点：drop事件，拖放的目标元素，其他元素被拖放到本元素中
+      stopBrowserDrapEvent: function () {
+        $(document).on("dragleave dragenter drop dragover", function (e) {
+          // 阻止默认事件，但是会发生冒泡 传递到上一层
+          e.preventDefault();
+          // 阻止事件的冒泡方法，会发生默认事件
+          e.stopPropagation();
+          // return false 上两种综合
+        });
+      },
+      initDrag() {
+        var self = this
+        this.stopBrowserDrapEvent();
+        // let box = document.getElementById('drop_area'); //拖拽区域
+        this.$el.addEventListener("drop", function (e) {
+          var fileList = e.dataTransfer.files; //获取文件对象
+          e.preventDefault(); //取消默认浏览器拖拽效果
+          //检测是否是拖拽文件到页面的操作
+          if (fileList.length == 0) {
+            return false;
+          }
+          // //检测文件是不是图片
+          // if (fileList[0].type.indexOf('image') === -1) {
+          //   alert("您拖的不是图片！");
+          //   return false;
+          // }
+          //拖拉图片到浏览器，可以实现预览功能
+          let img = window.URL.createObjectURL(fileList[0]);
+          // if (filesize > 512000) {
+          //   alert("上传大小不能超过15M.");
+          //   return false;
+          // }
+
+          var formData = new FormData();
+          // formData.append('user', $.cookie('user'));
+          formData.append('file', fileList[0]);
+          // self.uploadFiles.push({
+          //   id: fileList[0].lastModified,
+          //   name: fileList[0].name,
+          //   size: fileList[0].size
+          // })
+          console.log('formData:'+formData)
+          self.uploadFile(formData);
+        }, false);
+      },
+      uploadFile(formData) {
+        var self = this
+        console.log(formData)
+        var url = 'http://192.168.242.104/api/' + 'common/upload_file'
+        $.ajax({
+          url: url,
+          type: 'post',
+          data: formData,
+          contentType: false,
+          processData: false,
+          success: function (res) {
+            if (res.result) {
+              // self.uploadFiles[self.uploadFiles.length - 1].id = res.id;
+              // console.log(self.uploadFiles);
+              // console.log(res);
+              self.uploadFiles.push({
+                id: res.id,
+                name: res.name,
+                size: -1,
+                path: res.path
+              });
+            } else {
+              self.$message({
+                showClose: true,
+                message: res.detail,
+                type: 'warning'
+              })
+
+            }
+          },
+          progress: function (res) {
+            console.log(res)
+          },
+          error: function (res) {
+            console.log(res.detail)
+          }
+        })
+      },
+      deleteFile(index) {
+        this.uploadFiles.splice(index, 1)
       }
     },
     components: {
@@ -449,4 +558,54 @@
         line-height 30px
     li:hover
       background-color #cccccc
+  .wg-upload {
+    border: 1px dashed #ADADAD;
+    padding: 20px;
+    text-align: center;
+    color: #ADADAD;
+  }
+  .wg-upload .wg-upload-files {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+  .wg-upload .wg-upload-item {
+    width: 180px;
+    height: 50px;
+    display: inline-flex;
+    background: #F4F4F4;
+    margin: 0 20px 20px 0;
+  }
+  .wg-upload .wg-ui-desc {
+    padding: 10px;
+    width: 135px;
+  }
+  .wg-upload .wg-ui-desc .wg-uid-filename {
+    height: 18px;
+    width: 100px;
+    color: #000;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .wg-upload .wg-ui-desc .wg-uid-filesize {
+    height: 18px;
+    text-align: start;
+  }
+  .wg-upload .wg-ui-desc .wg-uid-delete {
+    display: block;
+    width: 18px;
+    height: 18px;
+    position: relative;
+    right: -98px;
+    top: -45px;
+    background: #DBDBDB;
+    text-align: center;
+    line-height: 18px;
+    color: #929292;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: '微软雅黑';
+  }
 </style>

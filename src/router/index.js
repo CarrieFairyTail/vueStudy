@@ -5,6 +5,7 @@ import hklDate from "../views/HKL/hklDate/hklDate.vue"
 import hklView from "../views/HKL/hklView/hklView.vue"
 import myText from '../views/HKL/text'
 import hklBill from '../views/HKL/hklBill/bill'
+import billHome from '../views/HKL/hklBill/billHome'
 import home from '../views/HKL/home'
 Vue.use(VueRouter)
 
@@ -33,6 +34,11 @@ const routes = [
     path: '/hklBill',
     name: 'bill',
     component: hklBill
+  },
+  {
+    path: '/billHome',
+    name: 'billHome',
+    component: billHome
   },
   {
     path: '/home',
