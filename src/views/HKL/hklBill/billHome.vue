@@ -3,7 +3,7 @@
     <div class="container">
       <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="navbar-header">
-          记账本
+          三只傻猪记账本
         </div>
         <div class="navbar-right">
           <a href="#" class="navbar-link">我的</a>
