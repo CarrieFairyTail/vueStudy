@@ -1,4 +1,4 @@
-import JsonUtil from '../utils/JsonUtil'
+import JsonUtil from '../../../utils/JsonUtil'
 
 export default {
   name: "hklDate",
