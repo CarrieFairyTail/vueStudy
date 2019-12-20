@@ -1,6 +1,6 @@
 <template>
   <div id="hklDate">
-    <h3 style="text-align: center">Carrie的行程安排
+    <h3 style="text-align: center">Carrie的行程安排(feature)
       <el-button type="text" @click="addNew">+ 添加行程</el-button>
     </h3>
     <el-table
